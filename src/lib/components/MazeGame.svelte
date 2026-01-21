@@ -40,9 +40,9 @@
     bestMoves: number | null;
   };
 
-  const BASE_CELL_SIZE = 28;
-  const MIN_CELL_SIZE = 16;
-  const MAX_CELL_SIZE = 36;
+  const BASE_CELL_SIZE = 24;
+  const MIN_CELL_SIZE = 12;
+  const MAX_CELL_SIZE = 32;
   const STORAGE_KEY = 'maze-game-progress';
 
   const COLORS = {
@@ -87,256 +87,31 @@
       m3: number;
       m2: number;
     }> = [
-      {
-        w: 5,
-        h: 5,
-        name: 'First Steps',
-        d: 'tutorial',
-        t3: 15,
-        t2: 30,
-        m3: 20,
-        m2: 35,
-      },
-      {
-        w: 6,
-        h: 6,
-        name: 'Getting Warmer',
-        d: 'tutorial',
-        t3: 20,
-        t2: 40,
-        m3: 25,
-        m2: 45,
-      },
-      {
-        w: 7,
-        h: 7,
-        name: 'A Bit Twisty',
-        d: 'tutorial',
-        t3: 25,
-        t2: 45,
-        m3: 35,
-        m2: 60,
-      },
-      {
-        w: 8,
-        h: 6,
-        name: 'Wide Open',
-        d: 'easy',
-        t3: 25,
-        t2: 50,
-        m3: 40,
-        m2: 65,
-      },
-      {
-        w: 6,
-        h: 8,
-        name: 'Tall Order',
-        d: 'easy',
-        t3: 25,
-        t2: 50,
-        m3: 40,
-        m2: 65,
-      },
-      {
-        w: 8,
-        h: 8,
-        name: 'Square One',
-        d: 'easy',
-        t3: 30,
-        t2: 55,
-        m3: 50,
-        m2: 80,
-      },
-      {
-        w: 9,
-        h: 9,
-        name: 'Growing Pains',
-        d: 'easy',
-        t3: 35,
-        t2: 65,
-        m3: 60,
-        m2: 95,
-      },
-      {
-        w: 10,
-        h: 8,
-        name: 'The Stretch',
-        d: 'easy',
-        t3: 40,
-        t2: 70,
-        m3: 65,
-        m2: 105,
-      },
-      {
-        w: 8,
-        h: 10,
-        name: 'Going Deep',
-        d: 'medium',
-        t3: 40,
-        t2: 75,
-        m3: 65,
-        m2: 105,
-      },
-      {
-        w: 10,
-        h: 10,
-        name: 'Midpoint',
-        d: 'medium',
-        t3: 50,
-        t2: 85,
-        m3: 80,
-        m2: 125,
-      },
-      {
-        w: 12,
-        h: 10,
-        name: 'Wide World',
-        d: 'medium',
-        t3: 60,
-        t2: 100,
-        m3: 95,
-        m2: 155,
-      },
-      {
-        w: 10,
-        h: 12,
-        name: 'Deep Dive',
-        d: 'medium',
-        t3: 60,
-        t2: 100,
-        m3: 95,
-        m2: 155,
-      },
-      {
-        w: 12,
-        h: 12,
-        name: 'Full Square',
-        d: 'medium',
-        t3: 70,
-        t2: 120,
-        m3: 115,
-        m2: 185,
-      },
-      {
-        w: 14,
-        h: 12,
-        name: 'The Expanse',
-        d: 'medium',
-        t3: 80,
-        t2: 140,
-        m3: 135,
-        m2: 215,
-      },
-      {
-        w: 12,
-        h: 14,
-        name: 'Long Road',
-        d: 'hard',
-        t3: 85,
-        t2: 145,
-        m3: 140,
-        m2: 225,
-      },
-      {
-        w: 14,
-        h: 14,
-        name: 'Expert Zone',
-        d: 'hard',
-        t3: 95,
-        t2: 165,
-        m3: 160,
-        m2: 255,
-      },
-      {
-        w: 16,
-        h: 14,
-        name: 'Wide Challenge',
-        d: 'hard',
-        t3: 110,
-        t2: 190,
-        m3: 185,
-        m2: 300,
-      },
-      {
-        w: 14,
-        h: 16,
-        name: 'Tall Challenge',
-        d: 'hard',
-        t3: 110,
-        t2: 190,
-        m3: 185,
-        m2: 300,
-      },
-      {
-        w: 16,
-        h: 16,
-        name: 'Master Test',
-        d: 'hard',
-        t3: 125,
-        t2: 215,
-        m3: 210,
-        m2: 340,
-      },
-      {
-        w: 18,
-        h: 18,
-        name: 'Ultimate Trial',
-        d: 'expert',
-        t3: 145,
-        t2: 250,
-        m3: 260,
-        m2: 420,
-      },
-      {
-        w: 20,
-        h: 15,
-        name: 'Wide Horizon',
-        d: 'expert',
-        t3: 155,
-        t2: 265,
-        m3: 275,
-        m2: 445,
-      },
-      {
-        w: 15,
-        h: 20,
-        name: 'Deep Descent',
-        d: 'expert',
-        t3: 155,
-        t2: 265,
-        m3: 275,
-        m2: 445,
-      },
-      {
-        w: 20,
-        h: 20,
-        name: 'The Big One',
-        d: 'expert',
-        t3: 180,
-        t2: 310,
-        m3: 325,
-        m2: 525,
-      },
-      {
-        w: 22,
-        h: 22,
-        name: 'Marathon',
-        d: 'master',
-        t3: 210,
-        t2: 360,
-        m3: 390,
-        m2: 630,
-      },
-      {
-        w: 25,
-        h: 25,
-        name: 'Grand Finale',
-        d: 'master',
-        t3: 260,
-        t2: 450,
-        m3: 500,
-        m2: 810,
-      },
+      { w: 8, h: 8, name: 'First Steps', d: 'tutorial', t3: 20, t2: 40, m3: 30, m2: 50 },
+      { w: 10, h: 10, name: 'Getting Warmer', d: 'tutorial', t3: 30, t2: 55, m3: 45, m2: 75 },
+      { w: 12, h: 12, name: 'A Bit Twisty', d: 'tutorial', t3: 40, t2: 70, m3: 65, m2: 100 },
+      { w: 14, h: 12, name: 'Wide Open', d: 'easy', t3: 45, t2: 80, m3: 75, m2: 120 },
+      { w: 12, h: 14, name: 'Tall Order', d: 'easy', t3: 45, t2: 80, m3: 75, m2: 120 },
+      { w: 14, h: 14, name: 'Square One', d: 'easy', t3: 55, t2: 95, m3: 90, m2: 145 },
+      { w: 16, h: 14, name: 'Growing Pains', d: 'easy', t3: 60, t2: 105, m3: 100, m2: 160 },
+      { w: 14, h: 16, name: 'The Stretch', d: 'easy', t3: 60, t2: 105, m3: 100, m2: 160 },
+      { w: 16, h: 16, name: 'Going Deep', d: 'medium', t3: 70, t2: 120, m3: 115, m2: 185 },
+      { w: 18, h: 16, name: 'Midpoint', d: 'medium', t3: 80, t2: 135, m3: 130, m2: 210 },
+      { w: 16, h: 18, name: 'Wide World', d: 'medium', t3: 80, t2: 135, m3: 130, m2: 210 },
+      { w: 18, h: 18, name: 'Deep Dive', d: 'medium', t3: 90, t2: 155, m3: 150, m2: 240 },
+      { w: 20, h: 18, name: 'Full Square', d: 'medium', t3: 100, t2: 170, m3: 165, m2: 265 },
+      { w: 18, h: 20, name: 'The Expanse', d: 'medium', t3: 100, t2: 170, m3: 165, m2: 265 },
+      { w: 20, h: 20, name: 'Long Road', d: 'hard', t3: 110, t2: 190, m3: 185, m2: 300 },
+      { w: 22, h: 20, name: 'Expert Zone', d: 'hard', t3: 120, t2: 205, m3: 200, m2: 325 },
+      { w: 20, h: 22, name: 'Wide Challenge', d: 'hard', t3: 120, t2: 205, m3: 200, m2: 325 },
+      { w: 22, h: 22, name: 'Tall Challenge', d: 'hard', t3: 135, t2: 230, m3: 225, m2: 365 },
+      { w: 24, h: 22, name: 'Master Test', d: 'hard', t3: 145, t2: 250, m3: 245, m2: 395 },
+      { w: 22, h: 24, name: 'Ultimate Trial', d: 'expert', t3: 145, t2: 250, m3: 245, m2: 395 },
+      { w: 24, h: 24, name: 'Wide Horizon', d: 'expert', t3: 160, t2: 275, m3: 270, m2: 435 },
+      { w: 26, h: 24, name: 'Deep Descent', d: 'expert', t3: 175, t2: 300, m3: 295, m2: 475 },
+      { w: 24, h: 26, name: 'The Big One', d: 'expert', t3: 175, t2: 300, m3: 295, m2: 475 },
+      { w: 28, h: 28, name: 'Marathon', d: 'master', t3: 220, t2: 375, m3: 365, m2: 590 },
+      { w: 32, h: 32, name: 'Grand Finale', d: 'master', t3: 290, t2: 495, m3: 480, m2: 775 },
     ];
     return configs.map((cfg, i) => ({
       id: i + 1,
@@ -406,10 +181,9 @@
       const levelNum = parseInt(levelParam, 10);
       if (levelNum >= 1 && levelNum <= levels.length) {
         const idx = levelNum - 1;
-        if (levels[idx].unlocked) {
-          startLevel(idx, false);
-          return;
-        }
+        // URL access bypasses unlock check for testing
+        startLevel(idx, false, true);
+        return;
       }
     }
 
@@ -432,8 +206,9 @@
 
     if (levelParam) {
       const levelNum = parseInt(levelParam, 10);
-      if (levelNum >= 1 && levelNum <= levels.length && levels[levelNum - 1].unlocked) {
-        startLevel(levelNum - 1, false);
+      if (levelNum >= 1 && levelNum <= levels.length) {
+        // URL access bypasses unlock check for testing
+        startLevel(levelNum - 1, false, true);
         return;
       }
     }
@@ -497,8 +272,8 @@
   function calculateCellSize(): void {
     if (!container || !currentLevel) return;
     const rect = container.getBoundingClientRect();
-    const maxWidth = Math.min(rect.width - 32, 700);
-    const maxHeight = window.innerHeight - 320;
+    const maxWidth = rect.width - 32;
+    const maxHeight = window.innerHeight - 280;
     const wSize = Math.floor(maxWidth / currentLevel.width);
     const hSize = Math.floor(maxHeight / currentLevel.height);
     cellSize = Math.max(
@@ -978,9 +753,9 @@
     if (Math.abs(dx) + Math.abs(dy) === 1) movePlayer(dx, dy);
   }
 
-  function startLevel(levelIndex: number, pushHistory = true): void {
+  function startLevel(levelIndex: number, pushHistory = true, bypassUnlock = false): void {
     const level = levels[levelIndex];
-    if (!level?.unlocked) return;
+    if (!level || (!bypassUnlock && !level.unlocked)) return;
     currentLevelIndex = levelIndex;
     if (pushHistory) updateURL();
     requestAnimationFrame(() => {
