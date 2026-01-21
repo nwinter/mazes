@@ -46,9 +46,9 @@
   const STORAGE_KEY = 'maze-game-progress';
 
   const COLORS = {
-    wall: '#1e293b',
-    path: '#0f172a',
-    pathLight: '#1a2332',
+    wall: '#64748b',
+    path: '#0a0f1a',
+    pathLight: '#111827',
     player: '#3b82f6',
     playerGlow: '#60a5fa',
     exit: '#22c55e',
@@ -634,7 +634,7 @@
       exitY * cellSize + cellSize / 2
     );
     ctx.strokeStyle = COLORS.wall;
-    ctx.lineWidth = Math.max(2, cellSize / 14);
+    ctx.lineWidth = Math.max(3, cellSize / 7);
     ctx.lineCap = 'round';
     for (let y = 0; y < currentLevel.height; y++) {
       for (let x = 0; x < currentLevel.width; x++) {
