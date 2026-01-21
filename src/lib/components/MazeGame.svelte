@@ -378,10 +378,11 @@
   let isTouching = false;
   let touchTrailPoints = <{ x: number; y: number; time: number }[]>[];
 
-  let currentLevel = $derived(levels[currentLevelIndex]);
-  let canvasWidth = $derived(currentLevel ? currentLevel.width * cellSize : 300);
-  let canvasHeight = $derived(currentLevel ? currentLevel.height * cellSize : 300);
-  let totalStars = $derived(levels.reduce((sum, l) => sum + l.bestStars, 0));
+  // Reactive computed values
+  $: currentLevel = levels[currentLevelIndex];
+  $: canvasWidth = currentLevel ? currentLevel.width * cellSize : 300;
+  $: canvasHeight = currentLevel ? currentLevel.height * cellSize : 300;
+  $: totalStars = levels.reduce((sum, l) => sum + l.bestStars, 0);
 
   function updateURL(): void {
     const params = new URLSearchParams();
