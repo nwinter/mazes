@@ -46,9 +46,9 @@
   const STORAGE_KEY = 'maze-game-progress';
 
   const COLORS = {
-    wall: '#64748b',
-    path: '#0a0f1a',
-    pathLight: '#111827',
+    wall: '#cbd5e1',
+    path: '#020617',
+    pathLight: '#0f172a',
     player: '#3b82f6',
     playerGlow: '#60a5fa',
     exit: '#22c55e',
@@ -378,10 +378,71 @@
   let isTouching = false;
   let touchTrailPoints = <{ x: number; y: number; time: number }[]>[];
 
-  const currentLevel = levels[currentLevelIndex];
-  const canvasWidth = currentLevel ? currentLevel.width * cellSize : 300;
-  const canvasHeight = currentLevel ? currentLevel.height * cellSize : 300;
-  const totalStars = levels.reduce((sum, l) => sum + l.bestStars, 0);
+  let currentLevel = $derived(levels[currentLevelIndex]);
+  let canvasWidth = $derived(currentLevel ? currentLevel.width * cellSize : 300);
+  let canvasHeight = $derived(currentLevel ? currentLevel.height * cellSize : 300);
+  let totalStars = $derived(levels.reduce((sum, l) => sum + l.bestStars, 0));
+
+  function updateURL(): void {
+    const params = new URLSearchParams();
+    if (gameState === 'playing' || gameState === 'won') {
+      params.set('level', String(currentLevelIndex + 1));
+    } else if (gameState === 'levelSelect') {
+      params.set('view', 'levels');
+    }
+    const newURL = params.toString() ? `?${params.toString()}` : window.location.pathname;
+    if (window.location.search !== (params.toString() ? `?${params.toString()}` : '')) {
+      window.history.pushState({ gameState, levelIndex: currentLevelIndex }, '', newURL);
+    }
+  }
+
+  function readURLState(): void {
+    const params = new URLSearchParams(window.location.search);
+    const levelParam = params.get('level');
+    const viewParam = params.get('view');
+
+    if (levelParam) {
+      const levelNum = parseInt(levelParam, 10);
+      if (levelNum >= 1 && levelNum <= levels.length) {
+        const idx = levelNum - 1;
+        if (levels[idx].unlocked) {
+          startLevel(idx, false);
+          return;
+        }
+      }
+    }
+
+    if (viewParam === 'levels') {
+      gameState = 'levelSelect';
+    }
+  }
+
+  function setGameState(state: GameState, pushHistory = true): void {
+    gameState = state;
+    if (pushHistory && (state === 'menu' || state === 'levelSelect')) {
+      updateURL();
+    }
+  }
+
+  function handlePopState(_event: PopStateEvent): void {
+    const params = new URLSearchParams(window.location.search);
+    const levelParam = params.get('level');
+    const viewParam = params.get('view');
+
+    if (levelParam) {
+      const levelNum = parseInt(levelParam, 10);
+      if (levelNum >= 1 && levelNum <= levels.length && levels[levelNum - 1].unlocked) {
+        startLevel(levelNum - 1, false);
+        return;
+      }
+    }
+
+    if (viewParam === 'levels') {
+      setGameState('levelSelect', false);
+    } else if (!levelParam && !viewParam) {
+      setGameState('menu', false);
+    }
+  }
 
   function saveProgress(): void {
     try {
@@ -816,7 +877,7 @@
 
   function handleKeydown(event: KeyboardEvent): void {
     if (gameState !== 'playing') {
-      if (event.key === 'Escape') gameState = 'levelSelect';
+      if (event.key === 'Escape') setGameState('levelSelect');
       return;
     }
     switch (event.key) {
@@ -851,7 +912,7 @@
         break;
       case 'Escape':
         event.preventDefault();
-        gameState = 'levelSelect';
+        setGameState('levelSelect');
         break;
     }
   }
@@ -916,10 +977,11 @@
     if (Math.abs(dx) + Math.abs(dy) === 1) movePlayer(dx, dy);
   }
 
-  function startLevel(levelIndex: number): void {
+  function startLevel(levelIndex: number, pushHistory = true): void {
     const level = levels[levelIndex];
     if (!level?.unlocked) return;
     currentLevelIndex = levelIndex;
+    if (pushHistory) updateURL();
     requestAnimationFrame(() => {
       calculateCellSize();
       maze = generateMaze(level.width, level.height);
@@ -954,7 +1016,7 @@
   function nextLevel(): void {
     if (currentLevelIndex < levels.length - 1)
       startLevel(currentLevelIndex + 1);
-    else gameState = 'levelSelect';
+    else setGameState('levelSelect');
   }
 
   function formatTime(seconds: number): string {
@@ -968,13 +1030,16 @@
     ctx = canvas?.getContext('2d');
     window.addEventListener('keydown', handleKeydown);
     window.addEventListener('resize', calculateCellSize);
+    window.addEventListener('popstate', handlePopState);
     animationFrameId = requestAnimationFrame(gameLoop);
     calculateCellSize();
+    readURLState();
   });
 
   onDestroy(() => {
     window.removeEventListener('keydown', handleKeydown);
     window.removeEventListener('resize', calculateCellSize);
+    window.removeEventListener('popstate', handlePopState);
     if (animationFrameId) cancelAnimationFrame(animationFrameId);
     if (timerInterval) clearInterval(timerInterval);
   });
@@ -1132,7 +1197,7 @@
         >
         <button
           class="px-6 py-3 rounded-lg bg-secondary text-secondary-foreground font-semibold hover:bg-secondary/80 transition-colors"
-          onclick={() => (gameState = 'levelSelect')}>📋 Select Level</button
+          onclick={() => setGameState('levelSelect')}>📋 Select Level</button
         >
       </div>
       <div
@@ -1155,7 +1220,7 @@
       >
         <button
           class="px-4 py-2 rounded-lg bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors"
-          onclick={() => (gameState = 'menu')}>← Back</button
+          onclick={() => setGameState('menu')}>← Back</button
         >
         <h2 class="text-lg sm:text-xl font-bold text-foreground">
           Select Level
@@ -1345,7 +1410,7 @@
               {:else}
                 <button
                   class="px-4 py-2 rounded-lg bg-amber-500 text-white hover:bg-amber-600 transition-colors text-sm sm:text-base"
-                  onclick={() => (gameState = 'levelSelect')}
+                  onclick={() => setGameState('levelSelect')}
                   >🏆 All Complete!</button
                 >
               {/if}
@@ -1357,7 +1422,7 @@
       <div class="flex gap-2 sm:gap-3">
         <button
           class="px-2 sm:px-3 py-1.5 rounded text-xs sm:text-sm bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors"
-          onclick={() => (gameState = 'levelSelect')}>← Levels</button
+          onclick={() => setGameState('levelSelect')}>← Levels</button
         >
         <button
           class="px-2 sm:px-3 py-1.5 rounded text-xs sm:text-sm bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors"
